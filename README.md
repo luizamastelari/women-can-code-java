@@ -5,10 +5,6 @@
 [![GitHub contributors][contributors-shield]][contributors-url]
 [![GPLv3 License][license-shield]][license-url]
 
-<a href="https://coveralls.io/github/badges/shields">
-        <img src="https://img.shields.io/coveralls/github/badges/shields.svg"
-            alt="coverage"></a>
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
