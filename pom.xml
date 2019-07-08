@@ -11,7 +11,7 @@
 	<groupId>com.womencancode</groupId>
 	<artifactId>ToDo-List</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>ToDo-List</name>
 	<description>Implements a ToDo list application using SpringBoot</description>
 
