@@ -1,3 +1,9 @@
+
+<!-- PROJECT SHIELDS -->
+[![Build Status][build-shield]][build-url]
+[![Contributors][contributors-shield]][contributors-url]
+[![MIT License][license-shield]][license-url]
+
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -39,4 +45,12 @@ Another way of doing that, without the need of running the previous steps is by 
 ```sh
 mvn clean spring-boot:run
 ```
+## License
+Distributed under GPLv3 license. See [License]([license-link]) for more information.
 
+[build-shield]: https://img.shields.io/badge/build-passing-brightgreen.svg?style=flat-square
+[build-url]: #
+[contributors-shield]: https://img.shields.io/badge/contributors-1-orange.svg?style=flat-square
+[contributors-url]: https://github.com/luanapp/women-can-code-java/graphs/contributors
+[license-shield]: https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat-square
+[license-url]: https://raw.githubusercontent.com/luanapp/women-can-code-java/master/LICENSE
