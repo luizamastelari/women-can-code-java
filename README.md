@@ -1,8 +1,13 @@
 
 <!-- PROJECT SHIELDS -->
 [![Build Status][build-shield]][build-url]
-[![Contributors][contributors-shield]][contributors-url]
-[![MIT License][license-shield]][license-url]
+[![Coverage Status][coverage-shield]][coverage-url]
+[![GitHub contributors][contributors-shield]][contributors-url]
+[![GPLv3 License][license-shield]][license-url]
+
+<a href="https://coveralls.io/github/badges/shields">
+        <img src="https://img.shields.io/coveralls/github/badges/shields.svg"
+            alt="coverage"></a>
 
 <!-- PROJECT LOGO -->
 <br />
@@ -28,8 +33,8 @@ This repository is used as an auxiliary resource for the Java Backend Course for
 ## Getting Started
 Right in the following sections, there'll be steps of how to build and run the project locally.
 ### Prerequisites
-Maven - version 3.5 or higher
-Java - JDK version 8 or higher
+Maven - version 3.5 or higher.<br/>
+Java - JDK version 8 or higher.
 ### Building the project
 To build the project, go to the project root folder and run:
 ```sh
@@ -48,9 +53,11 @@ mvn clean spring-boot:run
 ## License
 Distributed under GPLv3 license. See [License]([license-link]) for more information.
 
-[build-shield]: https://img.shields.io/badge/build-passing-brightgreen.svg?style=flat-square
-[build-url]: #
-[contributors-shield]: https://img.shields.io/badge/contributors-1-orange.svg?style=flat-square
+[build-shield]: https://travis-ci.org/luanapp/women-can-code-java.svg?branch=master
+[build-url]: https://travis-ci.org/luanapp/women-can-code-java
+[contributors-shield]: https://img.shields.io/github/contributors/luanapp/women-can-code-java.svg
 [contributors-url]: https://github.com/luanapp/women-can-code-java/graphs/contributors
+[coverage-shield]: https://coveralls.io/repos/github/luanapp/women-can-code-java/badge.svg?branch=master
+[coverage-url]:https://coveralls.io/github/luanapp/women-can-code-java?branch=master
 [license-shield]: https://img.shields.io/badge/license-GPLv3-blue.svg?style=flat-square
 [license-url]: https://raw.githubusercontent.com/luanapp/women-can-code-java/master/LICENSE
