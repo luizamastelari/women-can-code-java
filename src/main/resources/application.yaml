@@ -4,4 +4,8 @@ server:
     context-path: /api
 spring:
   application:
-    name: Todo application backend
+    name: Simple RBAC sample application backend
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
