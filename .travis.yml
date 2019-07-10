@@ -14,7 +14,7 @@ jdk:
   - openjdk8
 
 after_success:
-  - mvn cobertura:cobertura coveralls:report
+  - ./mvnw cobertura:cobertura coveralls:report
 
 branches:
   only:

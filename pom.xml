@@ -58,10 +58,19 @@
 				<version>${cobertura.plugin.version}</version>
 				<configuration>
 					<format>xml</format>
+					<format>html</format>
 					<maxmem>256m</maxmem>
 					<!-- aggregated reports for multi-module projects -->
 					<aggregate>true</aggregate>
-					<check>true</check>
+					<check>
+						<haltOnFailure>true</haltOnFailure>
+						<branchRate>75</branchRate>
+						<lineRate>85</lineRate>
+						<totalBranchRate>75</totalBranchRate>
+						<totalLineRate>85</totalLineRate>
+						<packageLineRate>75</packageLineRate>
+						<packageBranchRate>85</packageBranchRate>
+					</check>
 				</configuration>
 			</plugin>
 		</plugins>
