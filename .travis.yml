@@ -14,7 +14,7 @@ jdk:
   - openjdk8
 
 after_success:
-  - ./mvnw cobertura:cobertura coveralls:report
+  - ./mvnw clean test jacoco:report coveralls:report
 
 branches:
   only:
