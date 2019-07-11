@@ -95,8 +95,9 @@ public class ITRoleRepositoryTest {
     }
 
     private Role createRole(String name) {
-        Role role = new Role();
-        role.setName(name);
+        Role role = Role.builder()
+                .name(name)
+                .build();
         return role;
     }
 }
