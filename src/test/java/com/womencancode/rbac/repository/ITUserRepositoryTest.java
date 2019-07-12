@@ -97,10 +97,11 @@ public class ITUserRepositoryTest {
     }
 
     private User createUser(String name, String username, String email) {
-        User user = new User();
-        user.setName(name);
-        user.setUsername(username);
-        user.setEmail(email);
+        User user = User.builder()
+                .name(name)
+                .username(username)
+                .email(email)
+                .build();
         return user;
     }
 }
