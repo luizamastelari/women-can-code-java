@@ -1,6 +1,7 @@
 package com.womencancode.rbac.controller;
 
 import com.womencancode.rbac.exception.DuplicatedKeyException;
+import com.womencancode.rbac.exception.EntityNotFoundException;
 import com.womencancode.rbac.exception.Error;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,12 @@ public class ControllerExceptionHandler {
     public ResponseEntity<Error> duplicatedKeyException(Exception ex) {
         Error error = buildError(HttpStatus.CONFLICT.value(), ex);
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Error> entityNotFoundException(Exception ex) {
+        Error error = buildError(HttpStatus.NOT_FOUND.value(), ex);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)

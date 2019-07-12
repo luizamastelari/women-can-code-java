@@ -1,15 +1,13 @@
 package com.womencancode.rbac.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.womencancode.rbac.exception.ServiceException;
+import com.womencancode.rbac.exception.DuplicatedKeyException;
+import com.womencancode.rbac.exception.EntityNotFoundException;
 import com.womencancode.rbac.mock.UserData;
 import com.womencancode.rbac.model.User;
 import com.womencancode.rbac.service.UserService;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,7 +37,7 @@ public class UserControllerTest {
     public void insertUser() throws Exception {
         String userId = "Id";
         User user = UserData.getUserMock();
-        Mockito.when(service.insertUser(ArgumentMatchers.eq(user))).thenReturn(user.withId(userId));
+        Mockito.when(service.insertUser(eq(user))).thenReturn(user.withId(userId));
 
         mvc.perform(MockMvcRequestBuilders.post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -53,10 +52,22 @@ public class UserControllerTest {
     }
 
     @Test
+    public void insertExistentUser() throws Exception {
+        User user = UserData.getUserMock();
+        Mockito.when(service.insertUser(eq(user))).thenThrow(DuplicatedKeyException.class);
+
+        mvc.perform(MockMvcRequestBuilders.post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(user)))
+                .andExpect(status().isConflict())
+                .andReturn();
+    }
+
+    @Test
     public void updateUser() throws Exception {
         String userId = "Id";
         User user = UserData.getUserMock().withId(userId);
-        Mockito.when(service.updateUser(ArgumentMatchers.eq(user))).thenReturn(user);
+        Mockito.when(service.updateUser(eq(user))).thenReturn(user);
 
         mvc.perform(MockMvcRequestBuilders.put("/user/" + userId)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,6 +78,19 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.lastName", is(user.getLastName())))
                 .andExpect(jsonPath("$.email", is(user.getEmail())))
                 .andExpect(jsonPath("$.username", is(user.getUsername())))
+                .andReturn();
+    }
+
+    @Test
+    public void updateNonExistentUser() throws Exception {
+        String userId = "Id";
+        User user = UserData.getUserMock().withId(userId);
+        Mockito.when(service.updateUser(eq(user))).thenThrow(EntityNotFoundException.class);
+
+        mvc.perform(MockMvcRequestBuilders.put("/user/" + userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(user)))
+                .andExpect(status().isNotFound())
                 .andReturn();
     }
 }
