@@ -2,6 +2,7 @@ package com.womencancode.rbac.service;
 
 import com.womencancode.rbac.exception.DuplicatedKeyException;
 import com.womencancode.rbac.exception.EntityNotFoundException;
+import com.womencancode.rbac.exception.ServiceException;
 import com.womencancode.rbac.mock.UserData;
 import com.womencancode.rbac.model.User;
 import com.womencancode.rbac.repository.UserRepository;
@@ -9,6 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -17,6 +19,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -101,5 +104,38 @@ public class UserServiceTest {
         expectedException.expectMessage(String.format("User %s not found", user.getUsername()));
         verify(repository, times(1)).findById(eq(user.getId()));
         verify(repository, times(0)).save(eq(user));
+    }
+
+    @Test
+    public void givenAUserId_whenSearchingUserById_thenReturnFoundUser() throws Exception {
+        String id = "id";
+
+        // given
+        User user = UserData.getUserMock().withId(id);
+        when(repository.findById(eq(id))).thenReturn(Optional.of(user));
+
+        // when
+        User returnedUser = service.findById(id);
+
+        // then
+        verify(repository, times(1)).findById(id);
+        assertEquals(returnedUser, user);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void givenAnInexistentUserId_whenSearchingUserById_thenThrowAndException() throws Exception {
+        String id = "id";
+
+        // given
+        User user = UserData.getUserMock().withId(id);
+        when(repository.findById(eq(id))).thenReturn(Optional.empty());
+
+        // when
+        service.findById(id);
+
+        // then
+        verify(repository, times(1)).findById(id);
+        expectedException.expect(EntityNotFoundException.class);
+        expectedException.expectMessage(String.format("User %s not found", user.getUsername()));
     }
 }

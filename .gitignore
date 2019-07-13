@@ -31,4 +31,4 @@ build/
 .vscode/
 
 ### MongoDB location ###
-/db
+/db/data

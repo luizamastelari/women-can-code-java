@@ -4,11 +4,14 @@ import com.mongodb.lang.NonNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Wither;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Document
 @Data
@@ -29,6 +32,12 @@ public class User {
 
     private LocalDate birthDate;
 
-    @DBRef(db = "role", lazy = false)
+    @CreatedDate
+    private LocalDateTime createdDate;
+
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
+
+    @DBRef
     private Role role;
 }
