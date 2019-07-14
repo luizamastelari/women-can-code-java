@@ -1,9 +1,11 @@
 package com.womencancode.rbac.repository;
 
+import com.womencancode.rbac.group.Integration;
 import com.womencancode.rbac.model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,9 +21,9 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-@Profile("it")
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Category(Integration.class)
 public class ITUserRepositoryTest {
 
     private static final String USER_1 = "User 1";
