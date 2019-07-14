@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
@@ -60,7 +61,8 @@ public class ITRoleRepositoryTest {
 
         //then
         Role expectedRole = mongoOperations.findById(id, Role.class);
-        assertThat(role, is(expectedRole));
+        assertEquals(expectedRole.getName(), role.getName());
+        assertEquals(expectedRole.getId(), role.getId());
     }
 
     @Test

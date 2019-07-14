@@ -1,17 +1,16 @@
 package com.womencancode.rbac.service;
 
-import com.womencancode.rbac.exception.DuplicatedKeyException;
 import com.womencancode.rbac.exception.EntityNotFoundException;
-import com.womencancode.rbac.exception.InvalidFieldException;
 import com.womencancode.rbac.exception.ServiceException;
 import com.womencancode.rbac.model.User;
 import com.womencancode.rbac.repository.UserRepository;
+import com.womencancode.rbac.validator.ModelValidator;
+import com.womencancode.rbac.validator.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -21,6 +20,12 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
+    private ModelValidator validator;
+
+    public UserService(@Autowired UserRepository repository) {
+        this.repository = repository;
+        this.validator = ValidatorFactory.getValidator(User.class, repository);
+    }
 
     /**
      * Inserts a {@link User user} in the database.</br>
@@ -31,7 +36,7 @@ public class UserService {
      * @throws ServiceException
      */
     public User insertUser(User user) throws ServiceException {
-        validateInsert(user);
+        validator.validateInsert(user);
         return repository.insert(user);
     }
 
@@ -44,7 +49,7 @@ public class UserService {
      * @throws ServiceException
      */
     public List<User> insertUser(List<User> users) throws ServiceException {
-        validateInsert(users);
+        validator.validateInsert(users);
         return repository.insert(users);
     }
 
@@ -56,7 +61,7 @@ public class UserService {
      * @throws ServiceException
      */
     public User updateUser(User user) throws ServiceException {
-        validateId(user.getId());
+        validator.validateId(user.getId());
         return repository.save(user);
     }
 
@@ -76,26 +81,7 @@ public class UserService {
     }
 
     public void delete(String id) throws ServiceException {
-        validateId(id);
+        validator.validateId(id);
         repository.deleteById(id);
-    }
-
-    private void validateInsert(List<User> users) throws ServiceException {
-        for (User user : users) {
-            validateInsert(user);
-        }
-    }
-
-    private void validateInsert(User user) throws ServiceException {
-        if (StringUtils.hasLength(user.getId()))
-            throw new InvalidFieldException("Id is an invalid parameter for the insert action");
-
-        if (repository.findByUsername(user.getUsername()).isPresent())
-            throw new DuplicatedKeyException(String.format("Username %s already exist", user.getUsername()));
-    }
-
-    private void validateId(String id) throws EntityNotFoundException {
-        if (!repository.findById(id).isPresent())
-            throw new EntityNotFoundException(String.format("User %s not found", id));
     }
 }

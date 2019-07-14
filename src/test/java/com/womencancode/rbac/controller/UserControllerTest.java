@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -53,17 +52,18 @@ public class UserControllerTest {
     public void insertUser() throws Exception {
         String userId = "Id";
         User user = UserData.getUserMock();
-        when(service.insertUser(eq(user))).thenReturn(user.withId(userId));
+        User returnedUser = UserData.getUserMock(userId);
+        when(service.insertUser(eq(user))).thenReturn(returnedUser);
 
         mvc.perform(MockMvcRequestBuilders.post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(user)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(userId)))
-                .andExpect(jsonPath("$.name", is(user.getName())))
-                .andExpect(jsonPath("$.lastName", is(user.getLastName())))
-                .andExpect(jsonPath("$.email", is(user.getEmail())))
-                .andExpect(jsonPath("$.username", is(user.getUsername())))
+                .andExpect(jsonPath("$.name", is(returnedUser.getName())))
+                .andExpect(jsonPath("$.lastName", is(returnedUser.getLastName())))
+                .andExpect(jsonPath("$.email", is(returnedUser.getEmail())))
+                .andExpect(jsonPath("$.username", is(returnedUser.getUsername())))
                 .andReturn();
     }
 
@@ -83,7 +83,7 @@ public class UserControllerTest {
     public void insertUsers() throws Exception {
         String userId = "Id";
         List<User> users = UserData.getUserListMock();
-        List<User> returnedUsers = users.stream().map(user -> user.withId(userId)).collect(Collectors.toList());
+        List<User> returnedUsers = UserData.getUserListMock(userId);
         when(service.insertUser(eq(users))).thenReturn(returnedUsers);
 
         mvc.perform(MockMvcRequestBuilders.post("/user/bulk")
@@ -112,7 +112,7 @@ public class UserControllerTest {
     @Test
     public void updateUser() throws Exception {
         String userId = "Id";
-        User user = UserData.getUserMock().withId(userId);
+        User user = UserData.getUserMock(userId);
         when(service.updateUser(eq(user))).thenReturn(user);
 
         mvc.perform(MockMvcRequestBuilders.put("/user/" + userId)
@@ -130,7 +130,7 @@ public class UserControllerTest {
     @Test
     public void updateNonExistentUser() throws Exception {
         String userId = "Id";
-        User user = UserData.getUserMock().withId(userId);
+        User user = UserData.getUserMock(userId);
         when(service.updateUser(eq(user))).thenThrow(EntityNotFoundException.class);
 
         mvc.perform(MockMvcRequestBuilders.put("/user/" + userId)
@@ -143,7 +143,7 @@ public class UserControllerTest {
     @Test
     public void updateThrowsException() throws Exception {
         String userId = "Id";
-        User user = UserData.getUserMock().withId(userId);
+        User user = UserData.getUserMock(userId);
         when(service.updateUser(eq(user))).thenThrow(RuntimeException.class);
 
         mvc.perform(MockMvcRequestBuilders.put("/user/" + userId)
