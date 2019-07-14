@@ -61,7 +61,8 @@ public class ITRoleRepositoryTest {
 
         //then
         Role expectedRole = mongoOperations.findById(id, Role.class);
-        assertEquals(expectedRole, role);
+        assertEquals(expectedRole.getName(), role.getName());
+        assertEquals(expectedRole.getId(), role.getId());
     }
 
     @Test
