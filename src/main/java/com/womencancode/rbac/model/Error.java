@@ -1,4 +1,4 @@
-package com.womencancode.rbac.exception;
+package com.womencancode.rbac.model;
 
 import lombok.Builder;
 import lombok.Data;

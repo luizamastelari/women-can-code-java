@@ -61,8 +61,14 @@ public class ITUserRepositoryTest {
         idsToDelete.add(id);
 
         //then
+        // Remove nano seconds because in JDK9 and 10 the precision is bigger and the test fails
+        user.setCreatedDate(user.getCreatedDate().withNano(0));
+        user.setLastModifiedDate(user.getLastModifiedDate().withNano(0));
+
         User expectedUser = mongoOperations.findById(id, User.class);
-        assertThat(user, is(expectedUser));
+        expectedUser.setCreatedDate(expectedUser.getCreatedDate().withNano(0));
+        expectedUser.setLastModifiedDate(expectedUser.getLastModifiedDate().withNano(0));
+        assertEquals(expectedUser, user);
     }
 
     @Test

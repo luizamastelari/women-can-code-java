@@ -2,6 +2,7 @@ package com.womencancode.rbac.service;
 
 import com.womencancode.rbac.exception.DuplicatedKeyException;
 import com.womencancode.rbac.exception.EntityNotFoundException;
+import com.womencancode.rbac.exception.InvalidFieldException;
 import com.womencancode.rbac.mock.UserData;
 import com.womencancode.rbac.model.User;
 import com.womencancode.rbac.repository.UserRepository;
@@ -13,12 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,6 +73,39 @@ public class UserServiceTest {
     }
 
     @Test
+    public void givenAUserList_whenSavingUsers_thenUsersAreSavedAndReturned() throws Exception {
+
+        // given
+        List<User> users = UserData.getUserListMock();
+        when(repository.findByUsername(eq(users.get(0).getUsername()))).thenReturn(Optional.empty());
+        when(repository.insert(eq(users))).thenReturn(users);
+
+        // when
+        List<User> returnedUsers = service.insertUser(users);
+
+        // then
+        assertNotNull(returnedUsers);
+        assertEquals(users, returnedUsers);
+        verify(repository, times(3)).findByUsername(eq(users.get(0).getUsername()));
+        verify(repository, times(1)).insert(eq(users));
+    }
+
+    @Test(expected = InvalidFieldException.class)
+    public void givenAUserWithAnIdSet_whenInsertingUser_thenExceptionIsThrown() throws Exception {
+        // given
+        User user = UserData.getUserMock().withId("test");
+
+        // when
+        service.insertUser(user);
+
+        // then
+        expectedException.expect(InvalidFieldException.class);
+        expectedException.expectMessage("Id is an invalid parameter for the insert action");
+        verify(repository, times(0)).findByUsername(eq(user.getUsername()));
+        verify(repository, times(0)).insert(eq(user));
+    }
+
+    @Test
     public void givenAnyUser_whenUpdatingUser_thenUserIsUpdatedAndReturned() throws Exception {
 
         // given
@@ -98,8 +134,76 @@ public class UserServiceTest {
 
         // then
         expectedException.expect(EntityNotFoundException.class);
-        expectedException.expectMessage(String.format("User %s not found", user.getUsername()));
+        expectedException.expectMessage(String.format("User %s not found", user.getId()));
         verify(repository, times(1)).findById(eq(user.getId()));
         verify(repository, times(0)).save(eq(user));
+    }
+
+    @Test
+    public void givenAUserId_whenSearchingUserById_thenReturnFoundUser() throws Exception {
+        String id = "id";
+
+        // given
+        User user = UserData.getUserMock().withId(id);
+        when(repository.findById(eq(id))).thenReturn(Optional.of(user));
+
+        // when
+        User returnedUser = service.findById(id);
+
+        // then
+        verify(repository, times(1)).findById(id);
+        assertEquals(returnedUser, user);
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void givenAnInexistentUserId_whenSearchingUserById_thenThrowAndException() throws Exception {
+        String id = "id";
+
+        // given
+        User user = UserData.getUserMock().withId(id);
+        when(repository.findById(eq(id))).thenReturn(Optional.empty());
+
+        // when
+        service.findById(id);
+
+        // then
+        verify(repository, times(1)).findById(id);
+        expectedException.expect(EntityNotFoundException.class);
+        expectedException.expectMessage(String.format("User %s not found", id));
+    }
+
+    @Test
+    public void givenAnUserId_whenDeletingUserWithId_thenUserIsDeleted() throws Exception {
+        String id = "id";
+
+        // given
+        User user = UserData.getUserMock().withId(id);
+        when(repository.findById(eq(id))).thenReturn(Optional.of(user));
+        doNothing().when(repository).deleteById(eq(id));
+
+        // when
+        service.delete(id);
+
+        // then
+        verify(repository, times(1)).findById(eq(id));
+        verify(repository, times(1)).deleteById(eq(id));
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void givenAnInvalidUserId_whenDeletingUserWithId_thenExceptionIsThrown() throws Exception {
+        String id = "id";
+
+        // given
+        when(repository.findById(eq(id))).thenReturn(Optional.empty());
+
+        // when
+        service.delete(id);
+
+        // then
+        verify(repository, times(1)).findById(eq(id));
+        verify(repository, times(0)).deleteById(eq(id));
+
+        expectedException.expect(EntityNotFoundException.class);
+        expectedException.expectMessage(String.format("User %s not found", id));
     }
 }

@@ -1,0 +1,9 @@
+[
+    {"name": "Luana", "lastName":"Pimentel", "username": "luana.pimentel", "email": "luana.pimentel@wcc.com", "role": {"id": "5d2a2b0b889c0ae9909a73d9", "name": "Instructor"}},
+    {"name": "Gabriela", "lastName":"Moraes", "username": "gabriela.moraes", "email": "gabriela.moraes@wcc.com", "role": {"id": "5d2a2b0b889c0ae9909a73d9", "name": "Instructor"}},
+    {"name": "Jeniffer", "lastName":"Nolasco", "username": "jeniffer.nolasco", "email": "jeniffer.nolasco@wcc.com", "role": {"id": "5d2a2b0b889c0ae9909a73d9", "name": "Instructor"}},
+    {"name": "Augusto", "lastName":"Passarelli", "username": "augusto.passarelli", "email": "augusto.passarelli@wcc.com", "role": {"id": "5d2a2b0b889c0ae9909a73d9", "name": "Instructor"}},
+    {"name": "Marcela", "lastName":"Medicina", "username": "marcela.medicina", "email": "marcela.medicina@wcc.com", "role": {"id": "5d2a2b0b889c0ae9909a73da", "name": "Student"}},
+    {"name": "Andressa", "lastName":"Valentim", "username": "andressa.valentim", "email": "andressa.valentim@wcc.com", "role": {"id": "5d2a2b0b889c0ae9909a73da", "name": "Student"}},
+    {"name": "Valeria", "lastName":"Silva", "username": "valeria.silva", "email": "valeria.silva@wcc.com", "role": {"id": "5d2a2b0b889c0ae9909a73da", "name": "Student"}}
+]
