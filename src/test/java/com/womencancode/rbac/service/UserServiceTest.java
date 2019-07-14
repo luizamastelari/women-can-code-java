@@ -93,7 +93,8 @@ public class UserServiceTest {
     @Test(expected = InvalidFieldException.class)
     public void givenAUserWithAnIdSet_whenInsertingUser_thenExceptionIsThrown() throws Exception {
         // given
-        User user = UserData.getUserMock().withId("test");
+        User user = UserData.getUserMock();
+        user.setId("test");
 
         // when
         service.insertUser(user);
@@ -110,7 +111,9 @@ public class UserServiceTest {
 
         // given
         String id = "Id";
-        User user = UserData.getUserMock().withId(id);
+        User user = UserData.getUserMock();
+        user.setId(id);
+
         when(repository.findById(eq(user.getId()))).thenReturn(Optional.of(user));
         when(repository.save(eq(user))).thenReturn(user);
 
@@ -144,7 +147,8 @@ public class UserServiceTest {
         String id = "id";
 
         // given
-        User user = UserData.getUserMock().withId(id);
+        User user = UserData.getUserMock();
+        user.setId(id);
         when(repository.findById(eq(id))).thenReturn(Optional.of(user));
 
         // when
@@ -160,7 +164,6 @@ public class UserServiceTest {
         String id = "id";
 
         // given
-        User user = UserData.getUserMock().withId(id);
         when(repository.findById(eq(id))).thenReturn(Optional.empty());
 
         // when
@@ -177,7 +180,8 @@ public class UserServiceTest {
         String id = "id";
 
         // given
-        User user = UserData.getUserMock().withId(id);
+        User user = UserData.getUserMock();
+        user.setId(id);
         when(repository.findById(eq(id))).thenReturn(Optional.of(user));
         doNothing().when(repository).deleteById(eq(id));
 

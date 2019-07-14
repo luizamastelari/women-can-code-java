@@ -21,12 +21,22 @@ public class UserData {
                 .build();
     }
 
+    public static User getUserMock(String id) {
+        return User.builder()
+                .id(id)
+                .name(NAME)
+                .lastName(LAST_NAME)
+                .email(EMAIL)
+                .username(USERNAME)
+                .build();
+    }
+
     public static List<User> getUserListMock() {
         return Arrays.asList(getUserMock(), getUserMock(), getUserMock());
     }
 
     public static List<User> getUserListMock(String id) {
         int i = 1;
-        return Arrays.asList(getUserMock().withId(id + i++), getUserMock().withId(id + i++), getUserMock().withId(id + i++));
+        return Arrays.asList(getUserMock(id + i++), getUserMock(id + i++), getUserMock(id + i++));
     }
 }
