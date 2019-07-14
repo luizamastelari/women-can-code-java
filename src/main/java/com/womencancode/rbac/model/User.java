@@ -5,7 +5,6 @@ import com.womencancode.rbac.service.BaseModel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
 @Document
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 public class User extends BaseModel {
 
     private String name;
