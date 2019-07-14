@@ -10,17 +10,19 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 @EnableMongoAuditing
 public class MongoDBConfig extends AbstractMongoConfiguration {
 
-    private static final String DATABASE_NAME = "wcc";
+    private String databaseName;
 
     private String host;
     private int port;
 
     public MongoDBConfig(
             @Value("${spring.data.mongodb.host:localhost}") String host,
-            @Value("${spring.data.mongodb.port:27017}") int port
+            @Value("${spring.data.mongodb.port:27017}") int port,
+            @Value("${spring.data.mongodb.database:wcc}") String databaseName
     ) {
         this.host = host;
         this.port = port;
+        this.databaseName = databaseName;
     }
 
     @Override
@@ -30,6 +32,6 @@ public class MongoDBConfig extends AbstractMongoConfiguration {
 
     @Override
     protected String getDatabaseName() {
-        return DATABASE_NAME;
+        return databaseName;
     }
 }
