@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler({InvalidFieldException.class, JsonMappingException.class})
+    @ExceptionHandler({InvalidFieldException.class, EntityNotFoundException.class, JsonMappingException.class})
     public ResponseEntity<Error> serviceException(Exception ex) {
         log.error(ex.getMessage(), ex);
         return buildResponseEntity(HttpStatus.BAD_REQUEST, ex);
@@ -25,12 +25,6 @@ public class ControllerExceptionHandler {
     public ResponseEntity<Error> duplicatedKeyException(Exception ex) {
         log.error(ex.getMessage(), ex);
         return buildResponseEntity(HttpStatus.CONFLICT, ex);
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Error> entityNotFoundException(Exception ex) {
-        log.error(ex.getMessage(), ex);
-        return buildResponseEntity(HttpStatus.NOT_FOUND, ex);
     }
 
     @ExceptionHandler({Exception.class, RuntimeException.class})

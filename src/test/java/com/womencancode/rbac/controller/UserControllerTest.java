@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,8 +30,12 @@ import java.util.stream.Collectors;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,7 +53,7 @@ public class UserControllerTest {
     public void insertUser() throws Exception {
         String userId = "Id";
         User user = UserData.getUserMock();
-        Mockito.when(service.insertUser(eq(user))).thenReturn(user.withId(userId));
+        when(service.insertUser(eq(user))).thenReturn(user.withId(userId));
 
         mvc.perform(MockMvcRequestBuilders.post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +70,7 @@ public class UserControllerTest {
     @Test
     public void insertExistentUser() throws Exception {
         User user = UserData.getUserMock();
-        Mockito.when(service.insertUser(eq(user))).thenThrow(DuplicatedKeyException.class);
+        when(service.insertUser(eq(user))).thenThrow(DuplicatedKeyException.class);
 
         mvc.perform(MockMvcRequestBuilders.post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +84,7 @@ public class UserControllerTest {
         String userId = "Id";
         List<User> users = UserData.getUserListMock();
         List<User> returnedUsers = users.stream().map(user -> user.withId(userId)).collect(Collectors.toList());
-        Mockito.when(service.insertUser(eq(users))).thenReturn(returnedUsers);
+        when(service.insertUser(eq(users))).thenReturn(returnedUsers);
 
         mvc.perform(MockMvcRequestBuilders.post("/user/bulk")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -110,7 +113,7 @@ public class UserControllerTest {
     public void updateUser() throws Exception {
         String userId = "Id";
         User user = UserData.getUserMock().withId(userId);
-        Mockito.when(service.updateUser(eq(user))).thenReturn(user);
+        when(service.updateUser(eq(user))).thenReturn(user);
 
         mvc.perform(MockMvcRequestBuilders.put("/user/" + userId)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -128,20 +131,20 @@ public class UserControllerTest {
     public void updateNonExistentUser() throws Exception {
         String userId = "Id";
         User user = UserData.getUserMock().withId(userId);
-        Mockito.when(service.updateUser(eq(user))).thenThrow(EntityNotFoundException.class);
+        when(service.updateUser(eq(user))).thenThrow(EntityNotFoundException.class);
 
         mvc.perform(MockMvcRequestBuilders.put("/user/" + userId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(user)))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isBadRequest())
                 .andReturn();
     }
 
     @Test
-    public void updateThrowsRuntimeException() throws Exception {
+    public void updateThrowsException() throws Exception {
         String userId = "Id";
         User user = UserData.getUserMock().withId(userId);
-        Mockito.when(service.updateUser(eq(user))).thenThrow(RuntimeException.class);
+        when(service.updateUser(eq(user))).thenThrow(RuntimeException.class);
 
         mvc.perform(MockMvcRequestBuilders.put("/user/" + userId)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -155,16 +158,15 @@ public class UserControllerTest {
         List<User> users = UserData.getUserListMock("id");
         Page page = new PageImpl(new ArrayList(), PageRequest.of(0, 1), 0);
 
-        Mockito.when(service.findAll(any())).thenReturn(page);
+        when(service.findAll(any())).thenReturn(page);
 
         mvc.perform(MockMvcRequestBuilders.get("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(users)))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-        Mockito.verify(service, times(1)).findAll(pageableCaptor.capture());
+        verify(service, times(1)).findAll(pageableCaptor.capture());
 
         Pageable pageable = pageableCaptor.getValue();
         Assert.assertThat(pageable.getPageSize(), is(20));
@@ -176,19 +178,36 @@ public class UserControllerTest {
         List<User> users = UserData.getUserListMock("id");
         Page page = new PageImpl(new ArrayList(), PageRequest.of(1, 2), 0);
 
-        Mockito.when(service.findAll(any())).thenReturn(page);
+        when(service.findAll(any())).thenReturn(page);
 
         mvc.perform(MockMvcRequestBuilders.get("/user?page=1&size=2")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(users)))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-        Mockito.verify(service, times(1)).findAll(pageableCaptor.capture());
+        verify(service, times(1)).findAll(pageableCaptor.capture());
 
         Pageable pageable = pageableCaptor.getValue();
         Assert.assertThat(pageable.getPageSize(), is(2));
         Assert.assertThat(pageable.getPageNumber(), is(1));
+    }
+
+    @Test
+    public void deleteUser() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.delete("/user/123")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andReturn();
+    }
+
+    @Test
+    public void deleteInexistentUser() throws Exception {
+        doThrow(EntityNotFoundException.class).when(service).delete(anyString());
+
+        mvc.perform(MockMvcRequestBuilders.delete("/user/123")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
     }
 }

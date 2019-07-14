@@ -56,7 +56,7 @@ public class UserService {
      * @throws ServiceException
      */
     public User updateUser(User user) throws ServiceException {
-        validateUpdate(user);
+        validateId(user.getId());
         return repository.save(user);
     }
 
@@ -75,6 +75,11 @@ public class UserService {
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(message));
     }
 
+    public void delete(String id) throws ServiceException {
+        validateId(id);
+        repository.deleteById(id);
+    }
+
     private void validateInsert(List<User> users) throws ServiceException {
         for (User user : users) {
             validateInsert(user);
@@ -89,8 +94,8 @@ public class UserService {
             throw new DuplicatedKeyException(String.format("Username %s already exist", user.getUsername()));
     }
 
-    private void validateUpdate(User user) throws EntityNotFoundException {
-        if (!repository.findById(user.getId()).isPresent())
-            throw new EntityNotFoundException(String.format("User %s not found", user.getUsername()));
+    private void validateId(String id) throws EntityNotFoundException {
+        if (!repository.findById(id).isPresent())
+            throw new EntityNotFoundException(String.format("User %s not found", id));
     }
 }
