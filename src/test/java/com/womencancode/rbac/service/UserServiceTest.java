@@ -6,13 +6,13 @@ import com.womencancode.rbac.exception.InvalidFieldException;
 import com.womencancode.rbac.mock.UserData;
 import com.womencancode.rbac.model.User;
 import com.womencancode.rbac.repository.UserRepository;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,14 +26,18 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 public class UserServiceTest {
 
     @Mock
     private UserRepository repository;
 
-    @InjectMocks
     private UserService service;
+
+    @Before
+    public void setup() {
+        service = new UserService(repository);
+    }
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
