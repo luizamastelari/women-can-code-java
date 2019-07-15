@@ -17,7 +17,7 @@ jdk:
   - openjdk8
 
 env:
-  COMPOSE_VERSION: 1.4.1
+  - COMPOSE_VERSION: 1.4.1
 
 before_install:
   - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -25,7 +25,7 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 after_success:
-  - docker-compose run --build --force-recreate --renew-anon-volumes
+  - docker-compose up -d --build --force-recreate --renew-anon-volumes
   - curl -I -H "Content-Type: application/json" http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' women-can-code-java_wcc-backend_1):8080/api/role 2> /dev/null | head -n 1
   - ./mvnw clean verify jacoco:report coveralls:report
 
