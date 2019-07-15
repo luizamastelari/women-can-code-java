@@ -3,7 +3,8 @@ sudo: false
 
 script:
   - ./mvnw clean verify -B
-  - docker-compose up -d --build --force-recreate
+  - docker-compose up -d --build --force-recreate mongo
+  - docker-compose up -d --build --force-recreate wcc-backend
   - curl -I -H "Content-Type: application/json" http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' women-can-code-java_wcc-backend_1):8080/api/role 2> /dev/null | head -n 1
 
 services:
