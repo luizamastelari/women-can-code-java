@@ -14,7 +14,16 @@ public class TodoController {
 
     @GetMapping("/helloworld/{name}")
     public String helloWorld(@PathVariable String name) {
-        return new StringBuilder().append("Hello ").append(name).toString();
+        return "Hello " + name;
     }
-
+    
+    @GetMapping("/OiAmigo")
+    public String helloWorld2() {
+        return "OiAmigo";
+    }
+    
+    @GetMapping ("/OiAmigo/{cor}")
+    public String helloWorld2 (@PathVariable String cor){
+        return "Oi Amigo " + cor; 
+    }
 }

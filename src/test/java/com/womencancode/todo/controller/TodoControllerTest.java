@@ -35,4 +35,11 @@ public class TodoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedContent));
     }
+    
+    @Test
+    public void OiAmigo() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/OiAmigo"))
+                .andExpect(status().isOk());
+              
+    }
 }
