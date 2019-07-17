@@ -1,5 +1,6 @@
 package com.womencancode.rbac.repository;
 
+import com.womencancode.rbac.model.Role;
 import com.womencancode.rbac.model.User;
 import org.junit.After;
 import org.junit.Before;
@@ -36,6 +37,9 @@ public class ITUserRepositoryTest {
     @Autowired
     UserRepository repository;
 
+    @Autowired
+    RoleRepository repositoryRole;
+    
     private List<String> idsToDelete = new ArrayList<>();
 
     @Before
@@ -51,6 +55,32 @@ public class ITUserRepositoryTest {
         idsToDelete.clear();
     }
 
+    @Test
+    public void whenInsertingUserWithUser_thenRoleIsSet() {
+        //given
+        User user = createUser(USER_1, USERNAME_1, EMAIL_1);
+        
+        Role role = new Role();
+        role.setId("Role 1");
+        role.setName("Admin");
+        
+        // Role role = repositoryRole.findById("Role 1").get();
+
+        String id1 = repositoryRole.save(role).getId();
+        role.setId(id1);
+        
+        user.setRole(role);
+       
+        // when
+        String id = repository.save(user).getId();
+        idsToDelete.add(id);
+       
+
+        //then
+        User expectedUser = mongoOperations.findById(id, User.class);
+        assertThat(user.getRole(), is(expectedUser.getRole()));
+    }
+    
     @Test
     public void whenInsertingUser_thenUserIsInserted() {
         //given
